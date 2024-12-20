@@ -11,7 +11,7 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 object RetrofitInstance {
-    private const val BASE_URL = "http://10.0.2.2:3010/" // Canviar IP
+    private const val BASE_URL = "http://10.0.2.2:3011/" // Canviar IP
 //    private const val BASE_URL = "http://10.0.2.2:3000/"
 
     private val retrofit by lazy {

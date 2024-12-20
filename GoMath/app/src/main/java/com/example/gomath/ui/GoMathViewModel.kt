@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import org.json.JSONArray
 import org.json.JSONObject
 
 class GoMathViewModel() : ViewModel() {
@@ -38,7 +39,7 @@ class GoMathViewModel() : ViewModel() {
     init {
         viewModelScope.launch {
             try {
-                mSocket = IO.socket("http://10.0.2.2:3010")
+                mSocket = IO.socket("http://10.0.2.2:3011")
                 // mSocket = IO.socket("http://10.0.2.2:8000")
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -48,7 +49,8 @@ class GoMathViewModel() : ViewModel() {
             mSocket.on(Socket.EVENT_CONNECT) {
                 Log.d("SocketIO", "Connected to socket: ${mSocket.id()}")
                 mSocket.on("userJoined", onUserJoined)
-                mSocket.on("userLeft", onUserLeft)
+                mSocket.on("update-users", onUpdateUsers)
+                // mSocket.on("userLeft", onUserLeft)
                 //mSocket.on("roomUserDetails", onRoomUsers)
             }
             mSocket.on(Socket.EVENT_DISCONNECT) {
@@ -59,40 +61,45 @@ class GoMathViewModel() : ViewModel() {
 
     private val onUserJoined = Emitter.Listener { args ->
         val response = args[0] as JSONObject
-        val username = response.optString("username", "Desconocido")
-        val roomName = response.optString("room", "")
-        val usersArray = response.optJSONArray("users")
-        Log.d("SocketIO", "Usuario $username se unió a la sala $roomName")
+        Log.d("SocketIO", response.toString())
+        val membersArray = response.optJSONArray("members")
+        if (membersArray != null) {
+            Log.d("SocketIO", membersArray.toString())
+        }
 
-        if (usersArray != null) {
+        if (membersArray != null) {
             val userList = mutableListOf<User>()
-            for (i in 0 until usersArray.length()) {
-                val userJson = usersArray.getJSONObject(i)
+            for (i in 0 until membersArray.length()) {
+                val userJson = membersArray.getJSONObject(i)
                 val user = User(
-                    email = userJson.optString("email", ""),
-                    username = userJson.optString("username", ""),
-                    role = userJson.optString("role", "")
+                    id = userJson.optString("id", ""),
+                    name = userJson.optString("name", "")
                 )
                 userList.add(user)
             }
             _users.update { currentState ->
-                currentState.copy(users = userList)
+                currentState.copy(members = userList)
             }
-            Log.d("SocketIO", "Usuarios actualizados tras unirse: ${_users.value.users}")
+            Log.d("SocketIO", "Usuarios actualizados tras unirse: ${_users.value.members}")
         } else {
             Log.w("SocketIO", "Lista de usuarios no proporcionada en el evento userJoined.")
         }
     }
 
-    private val onUserLeft = Emitter.Listener { args->
-        val response = args[0] as JSONObject
-        val username = response.optString("username", "Desconocido")
-        val email = response.optString("email", "")
-        val roomName = response.optString("room", "")
-        Log.d("SocketIO", "Usuario $username salió de la sala $roomName")
-
+    private val onUpdateUsers = Emitter.Listener { args ->
+        val response = args[0] as JSONArray
+        Log.d("SocketIO", response.toString())
+        val userList = mutableListOf<User>()
+        for (i in 0 until response.length()) {
+            val userJson = response.getJSONObject(i)
+            val user = User(
+                id = userJson.optString("id", ""),
+                name = userJson.optString("name", "")
+            )
+            userList.add(user)
+        }
         _users.update { currentState ->
-            currentState.copy(users = currentState.users.filter { it.email != email })
+            currentState.copy(members = userList)
         }
     }
 
@@ -153,24 +160,23 @@ class GoMathViewModel() : ViewModel() {
 
     fun socket(code: String) {
         val data = JSONObject()
-        data.put("email", _currentUser.value?.email)
-        data.put("role", _currentUser.value?.role)
-        data.put("room", code)
+        data.put("roomCode", code)
+        data.put("username", "Android")
+        mSocket.emit("join-room", data)
         codeActual = code
         Log.d("socket", data.toString())
-        mSocket.emit("joinRoom", data)
     }
 
     fun kickUserFromRoom(user: User) {
         val data = JSONObject()
-        data.put("targetEmail", user.email)
-        data.put("room", codeActual)
+        data.put("roomCode", codeActual)
+        data.put("id", user.id)
         mSocket.emit("kickUser", data)
         Log.d("kick", "Emitiendo kickUser: $data")
         _users.update { currentState ->
-            currentState.copy(users = currentState.users.filter { it.email != user.email })
+            currentState.copy(members = currentState.members.filter { it.id != user.id })
         }
-        Log.d("kick", "L'Usuari: ${user.username} Ha estat eliminat")
+        Log.d("kick", "L'Usuari: ${user.name} Ha estat eliminat")
     }
 
     fun resetCode(){

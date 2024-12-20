@@ -94,7 +94,7 @@ fun LlistaRoom(users: Users, viewModel: GoMathViewModel, modifier: Modifier = Mo
                 .padding(horizontal = 16.dp, vertical = 8.dp), // Mejor espaciado en la lista
             verticalArrangement = Arrangement.spacedBy(12.dp) // Espacio mayor entre usuarios
         ) {
-            items(users.users) { user ->
+            items(users.members) { user ->
                 UserIndividual(
                     user = user,
                     users = users,
@@ -108,13 +108,13 @@ fun LlistaRoom(users: Users, viewModel: GoMathViewModel, modifier: Modifier = Mo
 
 @Composable
 fun UserIndividual(user: User, users: Users, viewModel: GoMathViewModel, modifier: Modifier = Modifier) {
-    Log.d("users", "user:" + user.username)
+    Log.d("users", "user:" + user.name)
 
     // Cambié los colores a un esquema más armónico con gradientes suaves
     val colors = listOf(
         Color(0xFF00459A)  // Light Orange
     )
-    val backgroundColor = colors[user.username.hashCode() % colors.size]
+    val backgroundColor = colors[user.name.hashCode() % colors.size]
 
     Box(
         modifier = Modifier
@@ -143,7 +143,7 @@ fun UserIndividual(user: User, users: Users, viewModel: GoMathViewModel, modifie
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = user.username,
+                    text = user.name,
                     style = MaterialTheme.typography.titleLarge, // Usando titleLarge como alternativa
                     color = Color.White
                 )

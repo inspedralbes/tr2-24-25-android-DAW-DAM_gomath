@@ -39,7 +39,7 @@ class GoMathViewModel() : ViewModel() {
     init {
         viewModelScope.launch {
             try {
-                mSocket = IO.socket("http://10.0.2.2:3011")
+                mSocket = IO.socket("http://10.0.2.2:3000")
                 // mSocket = IO.socket("http://10.0.2.2:8000")
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -48,7 +48,7 @@ class GoMathViewModel() : ViewModel() {
             mSocket.connect()
             mSocket.on(Socket.EVENT_CONNECT) {
                 Log.d("SocketIO", "Connected to socket: ${mSocket.id()}")
-                mSocket.on("userJoined", onUserJoined)
+                mSocket.on("joined-success", onUserJoined)
                 mSocket.on("update-users", onUpdateUsers)
                 // mSocket.on("userLeft", onUserLeft)
                 //mSocket.on("roomUserDetails", onRoomUsers)
@@ -61,7 +61,7 @@ class GoMathViewModel() : ViewModel() {
 
     private val onUserJoined = Emitter.Listener { args ->
         val response = args[0] as JSONObject
-        Log.d("SocketIO", response.toString())
+        Log.d("SocketIO2", response.toString())
         val membersArray = response.optJSONArray("members")
         if (membersArray != null) {
             Log.d("SocketIO", membersArray.toString())

@@ -1,15 +1,15 @@
 package com.example.gomath.model
 
 data class User (
-    val email: String = "",
-    val username: String = "",
+    val id: String = "",
+    val name: String = "",
     val role: String = "",
     val points: Int = 0,
     val questions: Int = 0
 )
 
 data class Users(
-    var users: List<User> = emptyList()
+    var members: List<User> = emptyList()
 )
 
 data class LoginResponse (

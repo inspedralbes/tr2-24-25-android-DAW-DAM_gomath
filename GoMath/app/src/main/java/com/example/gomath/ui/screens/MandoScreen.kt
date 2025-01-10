@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PauseCircle
 import androidx.compose.material3.Card
@@ -29,6 +30,7 @@ import androidx.navigation.NavHostController
 import com.example.gomath.R
 import com.example.gomath.model.User
 import com.example.gomath.model.Users
+import com.example.gomath.ui.GoMathApp
 import com.example.gomath.ui.GoMathViewModel
 
 @Composable
@@ -50,6 +52,28 @@ fun MandoScreen(viewModel: GoMathViewModel, navController: NavHostController) {
             color = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
+        Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+            // Botón para expulsar al usuario
+            IconButton(
+                onClick = {
+                    viewModel.resetCode()
+                    navController.navigate(GoMathApp.Code.name)
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Sortir de la Sala",
+                    tint = Color.Blue // Color rojo para indicar acción de expulsión
+                )
+            }
+            Text(
+                text = "Control de Usuarios",
+                fontSize = 32.sp,
+                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -70,7 +94,6 @@ fun MandoScreen(viewModel: GoMathViewModel, navController: NavHostController) {
 
 @Composable
 fun LlistaRoom(users: Users, viewModel: GoMathViewModel, modifier: Modifier = Modifier) {
-    viewModel.getLlista()
     Box(modifier = modifier.fillMaxSize()) {
         LazyColumn(
             modifier = Modifier
@@ -78,7 +101,7 @@ fun LlistaRoom(users: Users, viewModel: GoMathViewModel, modifier: Modifier = Mo
                 .padding(horizontal = 16.dp, vertical = 8.dp), // Mejor espaciado en la lista
             verticalArrangement = Arrangement.spacedBy(12.dp) // Espacio mayor entre usuarios
         ) {
-            items(users.users) { user ->
+            items(users.members) { user ->
                 UserIndividual(
                     user = user,
                     users = users,
@@ -92,11 +115,13 @@ fun LlistaRoom(users: Users, viewModel: GoMathViewModel, modifier: Modifier = Mo
 
 @Composable
 fun UserIndividual(user: User, users: Users, viewModel: GoMathViewModel, modifier: Modifier = Modifier) {
+    Log.d("users", "user:" + user.name)
+
     // Cambié los colores a un esquema más armónico con gradientes suaves
     val colors = listOf(
         Color(0xFF00459A)  // Light Orange
     )
-    val backgroundColor = colors[user.username.hashCode() % colors.size]
+    val backgroundColor = colors[user.name.hashCode() % colors.size]
 
     Box(
         modifier = Modifier
@@ -125,7 +150,7 @@ fun UserIndividual(user: User, users: Users, viewModel: GoMathViewModel, modifie
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = user.username,
+                    text = user.name,
                     style = MaterialTheme.typography.titleLarge, // Usando titleLarge como alternativa
                     color = Color.White
                 )

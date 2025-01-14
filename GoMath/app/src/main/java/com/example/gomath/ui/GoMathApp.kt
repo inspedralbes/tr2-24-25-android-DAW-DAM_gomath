@@ -48,8 +48,5 @@ fun GoMathApp(navController: NavHostController, context: Context) {
         composable(route = GoMathApp.Control.name) {
            MandoScreen(viewModel, navController)
         }
-//        composable(route = GoMathApp.Result.name) {
-//            ResultScreen()
-//        }
     }
 }

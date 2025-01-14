@@ -130,10 +130,13 @@ fun LoginScreen(viewModel: GoMathViewModel, navController: NavHostController) {
                         onClick = {
                             if (email.isNotEmpty() && password.isNotEmpty()) {
                                 showError = false
-                                loginSuccess = true
-                                viewModel.login(email, password, context)
-                                handleLogin(context)
-                                navController.navigate(GoMathApp.Code.name)
+                                viewModel.login(email, password, context) { isAllowed ->
+                                    if (isAllowed) {
+                                        navController.navigate(GoMathApp.Code.name)
+                                    } else {
+                                        Toast.makeText(context, "Accés denegat. Aquest compte no té permisos suficients.", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
                             } else {
                                 showError = true
                             }

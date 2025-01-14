@@ -119,7 +119,7 @@ class GoMathViewModel() : ViewModel() {
         }
     }
 
-    fun login(email: String, password: String, context: Context) {
+    fun login(email: String, password: String, context: Context, onSuccess: (Boolean) -> Unit) {
         viewModelScope.launch {
             val loginRequest = LoginRequest(email, password)
             loginError.value = null
@@ -127,24 +127,28 @@ class GoMathViewModel() : ViewModel() {
             val result = loginFromApi(loginRequest)
 
             if (result.isSuccess) {
-                Log.d("response", result.toString())
                 val loginResponse = result.getOrNull()
                 if (loginResponse != null) {
                     val user = UserSession(
                         loginResponse.email,
                         loginResponse.role
                     )
-                    saveUserToLocal(context, user)
-                    _currentUser.value = user
-                    Log.d("Login", _currentUser.value.toString())
-                }
-                else {
+
+                    if (user.role == "Professor") {
+                        saveUserToLocal(context, user)
+                        _currentUser.value = user
+                        onSuccess(true) // Permitir acceso
+                    } else {
+                        onSuccess(false) // Denegar acceso
+                    }
+                } else {
                     Log.e("Login", "Resposta correcta però el cos és nul o mal format. Comproveu la resposta de l'API.")
                 }
             } else {
                 result.exceptionOrNull()?.let {
                     loginError.value = "Error de xarxa o servidor. Si us plau, torna-ho a provar més tard."
                 }
+                onSuccess(false)
             }
         }
     }

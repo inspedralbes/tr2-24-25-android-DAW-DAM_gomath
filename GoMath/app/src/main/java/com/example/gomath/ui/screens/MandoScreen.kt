@@ -86,7 +86,6 @@ fun MandoScreen(viewModel: GoMathViewModel, navController: NavHostController) {
             isClicked = clickedButton == ButtonType.PAUSE
         ) {
             clickedButton = ButtonType.PAUSE
-            viewModel.pause()
         }
     }
 }

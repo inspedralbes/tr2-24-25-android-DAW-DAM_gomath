@@ -176,7 +176,6 @@ class GoMathViewModel() : ViewModel() {
         data.put("username", "Android")
         mSocket.emit("join-room", data)
         codeActual = code
-        Log.d("socket", data.toString())
     }
 
     fun kickUserFromRoom(user: User) {

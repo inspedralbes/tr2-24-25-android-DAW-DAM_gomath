@@ -50,13 +50,12 @@ import androidx.navigation.NavHostController
 import com.example.gomath.R
 import com.example.gomath.ui.GoMathApp
 import com.example.gomath.ui.GoMathViewModel
+
 @Composable
 fun CodeScreen(viewModel: GoMathViewModel, navController: NavHostController) {
     var code by remember { mutableStateOf("") }
     var showError by remember { mutableStateOf(false) }
-    var codeSuccess by remember { mutableStateOf(false) }
 
-    // Fondo animado
     val infiniteTransition = rememberInfiniteTransition(label = "Animation")
     val offsetAnimation by infiniteTransition.animateFloat(
         initialValue = 0f,
@@ -81,7 +80,7 @@ fun CodeScreen(viewModel: GoMathViewModel, navController: NavHostController) {
         contentAlignment = Alignment.Center
     ) {
         AnimatedVisibility(
-            visible = !codeSuccess,
+            visible = true,
             enter = fadeIn(animationSpec = tween(1000)) + expandVertically(),
             exit = fadeOut(animationSpec = tween(800)) + shrinkVertically()
         ) {
@@ -97,18 +96,17 @@ fun CodeScreen(viewModel: GoMathViewModel, navController: NavHostController) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = stringResource(id = R.string.login), // Usando el recurso de idioma
+                        text = stringResource(id = R.string.login),
                         style = MaterialTheme.typography.headlineLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // Campo de código
                     OutlinedTextField(
                         value = code,
                         onValueChange = { code = it },
-                        label = { Text(stringResource(id = R.string.code)) }, // Usando el recurso de idioma
+                        label = { Text(stringResource(id = R.string.code)) },
                         placeholder = { Text(stringResource(id = R.string.code)) },
                         leadingIcon = {
                             Icon(Icons.Default.Lock, contentDescription = stringResource(id = R.string.code))
@@ -120,41 +118,29 @@ fun CodeScreen(viewModel: GoMathViewModel, navController: NavHostController) {
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Botón de inicio de sesión
                     Button(
                         onClick = {
-                            showError = false
-                            codeSuccess = true
-                            viewModel.socket(code)
-                            navController.navigate(GoMathApp.Control.name)
+                            if (code.isEmpty()) {
+                                showError = true
+                            } else {
+                                showError = false
+                                viewModel.socket(code)
+                                navController.navigate(GoMathApp.Control.name)
+                            }
                         },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp)
                             .animateContentSize(animationSpec = tween(500)),
-                        shape = RoundedCornerShape(8.dp)
+                        shape = RoundedCornerShape(8.dp),
+                        enabled = code.isNotEmpty()
                     ) {
                         Text(
-                            text = stringResource(id = R.string.login), // Usando el recurso de idioma
+                            text = stringResource(R.string.enter),
                             style = MaterialTheme.typography.labelLarge,
                             color = Color.White
                         )
                     }
-
-                    // Mensaje de error
-                    AnimatedVisibility(
-                        visible = showError,
-                        enter = fadeIn(animationSpec = tween(500)) + slideInVertically(),
-                        exit = fadeOut(animationSpec = tween(500)) + slideOutVertically()
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.control), // Mensaje de error traducido
-                            color = MaterialTheme.colorScheme.error,
-                            fontSize = 16.sp,
-                            modifier = Modifier.padding(top = 16.dp)
-                        )
-                    }
-
                     Spacer(modifier = Modifier.height(24.dp))
 
                     // Botón de logout
@@ -167,27 +153,13 @@ fun CodeScreen(viewModel: GoMathViewModel, navController: NavHostController) {
                         shape = RoundedCornerShape(8.dp)
                     ) {
                         Text(
-                            text = stringResource(R.string.logout), // Usando el recurso de idioma
+                            text = stringResource(R.string.logout),
                             style = MaterialTheme.typography.labelLarge,
                             color = Color.White
                         )
                     }
                 }
             }
-        }
-
-        // Animación de éxito
-        AnimatedVisibility(
-            visible = codeSuccess,
-            enter = scaleIn(animationSpec = tween(1000)) + fadeIn(animationSpec = tween(1000)),
-            exit = fadeOut(animationSpec = tween(1000))
-        ) {
-            Text(
-                text = "Inici de sessió completat! 🎉",
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.padding(16.dp)
-            )
         }
     }
 }

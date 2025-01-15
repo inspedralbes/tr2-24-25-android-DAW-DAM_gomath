@@ -16,4 +16,5 @@
     <string name="Login_rol">Accés denegat. Aquest compte no té permisos suficients.</string>
     <string name="calculation">Càlcul: 0/%1$s</string>
     <string name="opportunities">Oportunitats: %1$s</string>
+    <string name="enter">Entra</string>
 </resources>

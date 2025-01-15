@@ -1,6 +1,5 @@
 package com.example.gomath.ui.screens
 
-import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -52,7 +51,7 @@ fun MandoScreen(viewModel: GoMathViewModel, navController: NavHostController) {
             }
 
             while (timeRemaining > 0 && !isPaused) {
-                delay(1000L) // Esperar 1 segundo
+                delay(1000L)
                 timeRemaining -= 1
             }
         }
@@ -96,7 +95,6 @@ fun MandoScreen(viewModel: GoMathViewModel, navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Mostrar cuenta regresiva solo si el modo es "crono"
         if (gameData?.modo == "crono") {
             Text(
                 text = "Tiempo restante: $timeRemaining segundos",
@@ -117,7 +115,6 @@ fun MandoScreen(viewModel: GoMathViewModel, navController: NavHostController) {
             icon = Icons.Filled.PauseCircle,
             isClicked = isPaused
         ) {
-            // Alternar el estado de pausa al hacer clic
             isPaused = !isPaused
             clickedButton = if (isPaused) ButtonType.PAUSE else null
         }
@@ -130,8 +127,8 @@ fun LlistaRoom(users: Users, game: Game, viewModel: GoMathViewModel, modifier: M
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp), // Mejor espaciado en la lista
-            verticalArrangement = Arrangement.spacedBy(12.dp) // Espacio mayor entre usuarios
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(users.members) { user ->
                 UserIndividual(
@@ -149,47 +146,47 @@ fun LlistaRoom(users: Users, game: Game, viewModel: GoMathViewModel, modifier: M
 @Composable
 fun UserIndividual(user: User, users: Users, game: Game, viewModel: GoMathViewModel, modifier: Modifier = Modifier) {
     val colors = listOf(
-        Color(0xFF00459A)  // Light Orange
+        Color(0xFF00459A)
     )
     val backgroundColor = colors[user.name.hashCode() % colors.size]
 
     Box(
         modifier = Modifier
-            .padding(8.dp) // Se aumentó el espaciado entre las tarjetas
+            .padding(8.dp)
             .fillMaxWidth()
             .height(90.dp)
     ) {
         Card(
             modifier = Modifier
                 .fillMaxSize()
-                .background(backgroundColor, shape = MaterialTheme.shapes.large), // Forma más redondeada
+                .background(backgroundColor, shape = MaterialTheme.shapes.large),
             elevation = CardDefaults.cardElevation(
-                defaultElevation = 8.dp // Sombras suaves para más profundidad
+                defaultElevation = 8.dp
             ),
             colors = CardDefaults.cardColors(
                 containerColor = backgroundColor,
                 contentColor = Color.White
             ),
-            shape = MaterialTheme.shapes.medium // Bordes redondeados para un diseño más moderno
+            shape = MaterialTheme.shapes.medium
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(12.dp), // Padding interno más amplio
+                    .padding(12.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     text = user.name,
-                    style = MaterialTheme.typography.titleLarge, // Usando titleLarge como alternativa
+                    style = MaterialTheme.typography.titleLarge,
                     color = Color.White
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = if (game.modo == "numero") {
-                        stringResource(R.string.calculation, game.cantidad) // Modo números
+                        stringResource(R.string.calculation, game.cantidad)
                     } else if (game.modo == "fallos") {
-                        stringResource(R.string.opportunities, game.cantidad)  // Modo fallos
+                        stringResource(R.string.opportunities, game.cantidad)
                     } else {
                         ""
                     },
@@ -200,19 +197,18 @@ fun UserIndividual(user: User, users: Users, game: Game, viewModel: GoMathViewMo
             }
         }
 
-        // Botón para expulsar al usuario
         IconButton(
             onClick = {
                 viewModel.kickUserFromRoom(user)
             },
             modifier = Modifier
-                .align(Alignment.TopEnd) // Alinear en la esquina superior derecha
-                .padding(8.dp) // Separación del borde
+                .align(Alignment.TopEnd)
+                .padding(8.dp)
         ) {
             Icon(
                 imageVector = Icons.Default.Close,
                 contentDescription = "Expulsar usuario",
-                tint = Color.Red // Color rojo para indicar acción de expulsión
+                tint = Color.Red
             )
         }
     }
@@ -253,7 +249,7 @@ fun ControlButton(
         Text(
             text = text,
             color = Color.White,
-            fontSize = 20.sp, // Mayor tamaño de texto
+            fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
     }

@@ -39,7 +39,7 @@ class GoMathViewModel() : ViewModel() {
     init {
         viewModelScope.launch {
             try {
-                mSocket = IO.socket("http://10.0.2.2:3000")
+                mSocket = IO.socket("http://gomath.daw.inspedralbes.cat:3000")
                 // mSocket = IO.socket("http://10.0.2.2:8000")
             } catch (e: Exception) {
                 e.printStackTrace()

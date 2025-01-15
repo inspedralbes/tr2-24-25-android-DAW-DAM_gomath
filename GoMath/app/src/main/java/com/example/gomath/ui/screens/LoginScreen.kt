@@ -90,7 +90,7 @@ fun LoginScreen(viewModel: GoMathViewModel, navController: NavHostController) {
                         value = email,
                         onValueChange = { email = it },
                         label = { Text(stringResource(R.string.email)) },
-                        placeholder = { Text("exemple@correu.com") },
+                        placeholder = { Text("exemple@email.com") },
                         leadingIcon = {
                             Icon(Icons.Default.Email, contentDescription = "Email")
                         },
@@ -136,7 +136,7 @@ fun LoginScreen(viewModel: GoMathViewModel, navController: NavHostController) {
                                     if (isAllowed) {
                                         navController.navigate(GoMathApp.Code.name)
                                     } else {
-                                        Toast.makeText(context, "Accés denegat. Aquest compte no té permisos suficients.", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(context, stringResource(R.string.login_rol)), Toast.LENGTH_SHORT).show()
                                     }
                                 }
                             } else {

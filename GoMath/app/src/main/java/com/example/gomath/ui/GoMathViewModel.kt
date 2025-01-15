@@ -48,6 +48,7 @@ class GoMathViewModel() : ViewModel() {
                 Log.d("SocketIO", "Connected to socket: ${mSocket.id()}")
                 mSocket.on("joined-success", onUserJoined)
                 mSocket.on("update-users", onUpdateUsers)
+                mSocket.on("tipoPartidaUser", tipoPartidaUser)
                 // mSocket.on("userLeft", onUserLeft)
                 //mSocket.on("roomUserDetails", onRoomUsers)
             }
@@ -99,6 +100,12 @@ class GoMathViewModel() : ViewModel() {
         _users.update { currentState ->
             currentState.copy(members = userList)
         }
+    }
+
+    private val tipoPartidaUser = Emitter.Listener { args ->
+        val response = args[0] as JSONObject
+        val tipoPartida = response.getString("tipoPartida") // Extraer el valor de "tipoPartida"
+        Log.d("SocketIO", "Tipo de partida recibida: $tipoPartida")
     }
 
     fun getUserFromLocal(context: Context, onResult: (UserSession?) -> Unit) {

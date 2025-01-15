@@ -32,11 +32,20 @@ import com.example.gomath.model.User
 import com.example.gomath.model.Users
 import com.example.gomath.ui.GoMathApp
 import com.example.gomath.ui.GoMathViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun MandoScreen(viewModel: GoMathViewModel, navController: NavHostController) {
     var clickedButton by remember { mutableStateOf<ButtonType?>(null) }
     val users by viewModel.users.collectAsState()
+    var timeLeft by remember { mutableStateOf(30) } // Tiempo inicial de 30 segundos
+
+    LaunchedEffect(key1 = timeLeft) {
+        if (timeLeft > 0) {
+            delay(1000L) // Esperar un segundo
+            timeLeft -= 1
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -62,7 +71,7 @@ fun MandoScreen(viewModel: GoMathViewModel, navController: NavHostController) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription = "Sortir de la Sala",
-                    tint = Color.Blue // Color rojo para indicar acción de expulsión
+                    tint = Color.Blue
                 )
             }
             Text(
@@ -73,6 +82,16 @@ fun MandoScreen(viewModel: GoMathViewModel, navController: NavHostController) {
                 modifier = Modifier
             )
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Mostrar cuenta regresiva
+        Text(
+            text = "Tiempo restante: $timeLeft segundos",
+            fontSize = 24.sp,
+            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onPrimary
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 

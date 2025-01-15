@@ -14,4 +14,6 @@
     <string name="stop">Pausa</string>
     <string name="user_control">Control de Usuarios</string>
     <string name="Login_rol">Acceso denegado. Esta cuenta no tiene permisos suficientes.</string>
+    <string name="calculation">Cálculo: 0/%1$s</string>
+    <string name="opportunities">Oportunidades: %1$s</string>
 </resources>

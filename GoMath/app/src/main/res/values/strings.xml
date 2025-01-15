@@ -13,4 +13,6 @@
     <string name="stop">Stop</string>
     <string name="user_control">User Control</string>
     <string name="Login_rol">Access denied. This account does not have sufficient permissions.</string>
+    <string name="calculation">Calculation: 0/%1$s</string>
+    <string name="opportunities">Opportunities: %1$s</string>
 </resources>

@@ -123,7 +123,6 @@ fun CodeScreen(viewModel: GoMathViewModel, navController: NavHostController) {
                     // Botón de inicio de sesión
                     Button(
                         onClick = {
-                            // Enviar código
                             showError = false
                             codeSuccess = true
                             viewModel.socket(code)

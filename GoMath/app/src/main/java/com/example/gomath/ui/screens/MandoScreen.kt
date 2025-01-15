@@ -24,10 +24,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.gomath.R
+import com.example.gomath.model.Game
 import com.example.gomath.model.User
 import com.example.gomath.model.Users
 import com.example.gomath.ui.GoMathApp
@@ -38,12 +40,21 @@ import kotlinx.coroutines.delay
 fun MandoScreen(viewModel: GoMathViewModel, navController: NavHostController) {
     var clickedButton by remember { mutableStateOf<ButtonType?>(null) }
     val users by viewModel.users.collectAsState()
-    var timeLeft by remember { mutableStateOf(30) } // Tiempo inicial de 30 segundos
+    val gameData by viewModel.gameData.collectAsState()
 
-    LaunchedEffect(key1 = timeLeft) {
-        if (timeLeft > 0) {
-            delay(1000L) // Esperar un segundo
-            timeLeft -= 1
+    var timeRemaining by remember { mutableStateOf(gameData?.cantidad ?: 30) }
+    var isPaused by remember { mutableStateOf(false) }
+
+    LaunchedEffect(key1 = gameData?.cantidad, key2 = isPaused) {
+        if (gameData?.modo == "crono" && !isPaused) {
+            if (timeRemaining == gameData?.cantidad) {
+                timeRemaining = gameData?.cantidad ?: 30
+            }
+
+            while (timeRemaining > 0 && !isPaused) {
+                delay(1000L) // Esperar 1 segundo
+                timeRemaining -= 1
+            }
         }
     }
 
@@ -57,7 +68,7 @@ fun MandoScreen(viewModel: GoMathViewModel, navController: NavHostController) {
         Text(
             text = stringResource(R.string.user_control),
             fontSize = 32.sp,
-            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+            fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
@@ -77,7 +88,7 @@ fun MandoScreen(viewModel: GoMathViewModel, navController: NavHostController) {
             Text(
                 text = "Control de Usuarios",
                 fontSize = 32.sp,
-                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier
             )
@@ -85,32 +96,36 @@ fun MandoScreen(viewModel: GoMathViewModel, navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Mostrar cuenta regresiva
-        Text(
-            text = "Tiempo restante: $timeLeft segundos",
-            fontSize = 24.sp,
-            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onPrimary
-        )
+        // Mostrar cuenta regresiva solo si el modo es "crono"
+        if (gameData?.modo == "crono") {
+            Text(
+                text = "Tiempo restante: $timeRemaining segundos",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        LlistaRoom(users = users, viewModel = viewModel, modifier = Modifier.weight(1f))
+        gameData?.let { LlistaRoom(users = users, game = it, viewModel = viewModel, modifier = Modifier.weight(1f)) }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         ControlButton(
             text = stringResource(R.string.stop),
             icon = Icons.Filled.PauseCircle,
-            isClicked = clickedButton == ButtonType.PAUSE
+            isClicked = isPaused
         ) {
-            clickedButton = ButtonType.PAUSE
+            // Alternar el estado de pausa al hacer clic
+            isPaused = !isPaused
+            clickedButton = if (isPaused) ButtonType.PAUSE else null
         }
     }
 }
 
 @Composable
-fun LlistaRoom(users: Users, viewModel: GoMathViewModel, modifier: Modifier = Modifier) {
+fun LlistaRoom(users: Users, game: Game, viewModel: GoMathViewModel, modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxSize()) {
         LazyColumn(
             modifier = Modifier
@@ -122,6 +137,7 @@ fun LlistaRoom(users: Users, viewModel: GoMathViewModel, modifier: Modifier = Mo
                 UserIndividual(
                     user = user,
                     users = users,
+                    game = game,
                     viewModel = viewModel,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -131,10 +147,7 @@ fun LlistaRoom(users: Users, viewModel: GoMathViewModel, modifier: Modifier = Mo
 }
 
 @Composable
-fun UserIndividual(user: User, users: Users, viewModel: GoMathViewModel, modifier: Modifier = Modifier) {
-    Log.d("users", "user:" + user.name)
-
-    // Cambié los colores a un esquema más armónico con gradientes suaves
+fun UserIndividual(user: User, users: Users, game: Game, viewModel: GoMathViewModel, modifier: Modifier = Modifier) {
     val colors = listOf(
         Color(0xFF00459A)  // Light Orange
     )
@@ -173,10 +186,17 @@ fun UserIndividual(user: User, users: Users, viewModel: GoMathViewModel, modifie
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "¡Hola!",
-                    style = MaterialTheme.typography.bodyMedium, // Usando bodyMedium como alternativa
-                    color = Color.White.copy(alpha = 0.7f) // Menor opacidad para el saludo
+                    text = if (game.modo == "numero") {
+                        stringResource(R.string.calculation, game.cantidad) // Modo números
+                    } else if (game.modo == "fallos") {
+                        stringResource(R.string.opportunities, game.cantidad)  // Modo fallos
+                    } else {
+                        ""
+                    },
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.White.copy(alpha = 0.7f)
                 )
+
             }
         }
 
@@ -198,8 +218,6 @@ fun UserIndividual(user: User, users: Users, viewModel: GoMathViewModel, modifie
     }
 }
 
-
-
 @Composable
 fun ControlButton(
     text: String,
@@ -220,7 +238,7 @@ fun ControlButton(
             .fillMaxWidth()
             .clickable { onClick() }
             .background(backgroundColor, shape = MaterialTheme.shapes.medium)
-            .padding(20.dp) // Espaciado más amplio en el botón
+            .padding(20.dp)
             .scale(scale),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
@@ -229,18 +247,18 @@ fun ControlButton(
             imageVector = icon,
             contentDescription = text,
             tint = Color.White,
-            modifier = Modifier.size(28.dp) // Icono más grande para mejor visibilidad
+            modifier = Modifier.size(28.dp)
         )
         Spacer(modifier = Modifier.width(12.dp))
         Text(
             text = text,
             color = Color.White,
             fontSize = 20.sp, // Mayor tamaño de texto
-            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+            fontWeight = FontWeight.Bold
         )
     }
 }
 
 enum class ButtonType {
-    REWIND, PAUSE, FORWARD
+    PAUSE
 }

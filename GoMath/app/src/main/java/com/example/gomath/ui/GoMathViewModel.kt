@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gomath.data.local.GoMathDB
 import com.example.gomath.data.loginFromApi
+import com.example.gomath.model.Game
 import com.example.gomath.model.LoginRequest
 import com.example.gomath.model.UserSession
 import com.example.gomath.model.User
@@ -23,9 +24,10 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 class GoMathViewModel() : ViewModel() {
-    private val loginError = mutableStateOf<String?>(null)
-
     private val _currentUser = MutableStateFlow<UserSession?>(null)
+
+    private val _gameData = MutableStateFlow<Game?>(null)
+    val gameData: StateFlow<Game?> = _gameData
 
     private val _users = MutableStateFlow(Users())
     val users: StateFlow<Users> = _users.asStateFlow()
@@ -49,8 +51,6 @@ class GoMathViewModel() : ViewModel() {
                 mSocket.on("joined-success", onUserJoined)
                 mSocket.on("update-users", onUpdateUsers)
                 mSocket.on("tipoPartidaUser", tipoPartidaUser)
-                // mSocket.on("userLeft", onUserLeft)
-                //mSocket.on("roomUserDetails", onRoomUsers)
             }
             mSocket.on(Socket.EVENT_DISCONNECT) {
                 Log.d("SocketIO", "Disconnected from socket")
@@ -104,8 +104,11 @@ class GoMathViewModel() : ViewModel() {
 
     private val tipoPartidaUser = Emitter.Listener { args ->
         val response = args[0] as JSONObject
-        val tipoPartida = response.getString("tipoPartida") // Extraer el valor de "tipoPartida"
-        Log.d("SocketIO", "Tipo de partida recibida: $tipoPartida")
+        Log.d("SocketIO", response.toString())
+        val tipPartida = response.getJSONObject("tipoPartida")
+        val modo = tipPartida.getString("modo")
+        val cantidad = tipPartida.getInt("cantidad")
+        _gameData.value = Game(modo = modo, cantidad = cantidad)
     }
 
     fun getUserFromLocal(context: Context, onResult: (UserSession?) -> Unit) {

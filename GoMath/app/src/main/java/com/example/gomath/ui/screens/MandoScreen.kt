@@ -53,7 +53,6 @@ fun MandoScreen(viewModel: GoMathViewModel, navController: NavHostController) {
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
         Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-            // Botón para expulsar al usuario
             IconButton(
                 onClick = {
                     viewModel.resetCode()

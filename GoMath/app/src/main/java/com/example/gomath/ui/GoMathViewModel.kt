@@ -37,7 +37,8 @@ class GoMathViewModel() : ViewModel() {
     init {
         viewModelScope.launch {
             try {
-                mSocket = IO.socket("http://gomath.daw.inspedralbes.cat:21555")
+                // mSocket = IO.socket("http://gomath.daw.inspedralbes.cat:21555")
+                mSocket = IO.socket("http://10.0.2.2:3000")
             } catch (e: Exception) {
                 e.printStackTrace()
                 Log.e("SocketIO", "Failed to connect to socket", e)
@@ -117,37 +118,47 @@ class GoMathViewModel() : ViewModel() {
     }
 
     fun login(email: String, password: String, context: Context, onSuccess: (Boolean) -> Unit) {
-        viewModelScope.launch {
-            val loginRequest = LoginRequest(email, password)
-            loginError.value = null
+        val user = UserSession(email, "Professor")
+        _currentUser.value = user
 
-            val result = loginFromApi(loginRequest)
-
-            if (result.isSuccess) {
-                val loginResponse = result.getOrNull()
-                if (loginResponse != null) {
-                    val user = UserSession(
-                        loginResponse.email,
-                        loginResponse.role
-                    )
-
-                    if (user.role == "Professor") {
-                        saveUserToLocal(context, user)
-                        _currentUser.value = user
-                        onSuccess(true) // Permitir acceso
-                    } else {
-                        onSuccess(false) // Denegar acceso
-                    }
-                } else {
-                    Log.e("Login", "Resposta correcta però el cos és nul o mal format. Comproveu la resposta de l'API.")
-                }
-            } else {
-                result.exceptionOrNull()?.let {
-                    loginError.value = "Error de xarxa o servidor. Si us plau, torna-ho a provar més tard."
-                }
-                onSuccess(false)
-            }
+        if (user.role == "Professor") {
+            saveUserToLocal(context, user)
+            _currentUser.value = user
+            onSuccess(true)
+        } else {
+            onSuccess(false)
         }
+//        viewModelScope.launch {
+//            val loginRequest = LoginRequest(email, password)
+//            loginError.value = null
+//
+//            val result = loginFromApi(loginRequest)
+//
+//            if (result.isSuccess) {
+//                val loginResponse = result.getOrNull()
+//                if (loginResponse != null) {
+//                    val user = UserSession(
+//                        loginResponse.email,
+//                        loginResponse.role
+//                    )
+//
+//                    if (user.role == "Professor") {
+//                        saveUserToLocal(context, user)
+//                        _currentUser.value = user
+//                        onSuccess(true) // Permitir acceso
+//                    } else {
+//                        onSuccess(false) // Denegar acceso
+//                    }
+//                } else {
+//                    Log.e("Login", "Resposta correcta però el cos és nul o mal format. Comproveu la resposta de l'API.")
+//                }
+//            } else {
+//                result.exceptionOrNull()?.let {
+//                    loginError.value = "Error de xarxa o servidor. Si us plau, torna-ho a provar més tard."
+//                }
+//                onSuccess(false)
+//            }
+//        }
     }
 
     fun logout(context: Context) {
@@ -182,11 +193,5 @@ class GoMathViewModel() : ViewModel() {
 
     fun resetCode(){
         codeActual = ""
-    }
-
-    fun pause() {
-        Log.d("MandoScreen", "Pausando...")
-        // Envía una señal al servidor si es necesario
-        mSocket.emit("pause")
     }
 }

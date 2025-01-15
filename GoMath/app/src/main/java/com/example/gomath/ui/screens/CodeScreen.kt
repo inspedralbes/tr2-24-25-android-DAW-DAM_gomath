@@ -43,12 +43,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.gomath.R
 import com.example.gomath.ui.GoMathApp
 import com.example.gomath.ui.GoMathViewModel
-
 @Composable
 fun CodeScreen(viewModel: GoMathViewModel, navController: NavHostController) {
     var code by remember { mutableStateOf("") }
@@ -65,7 +66,6 @@ fun CodeScreen(viewModel: GoMathViewModel, navController: NavHostController) {
             repeatMode = RepeatMode.Reverse
         ), label = "Animation"
     )
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -97,7 +97,7 @@ fun CodeScreen(viewModel: GoMathViewModel, navController: NavHostController) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Benvingut/da",
+                        text = stringResource(id = R.string.login), // Usando el recurso de idioma
                         style = MaterialTheme.typography.headlineLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -108,10 +108,10 @@ fun CodeScreen(viewModel: GoMathViewModel, navController: NavHostController) {
                     OutlinedTextField(
                         value = code,
                         onValueChange = { code = it },
-                        label = { Text("Introdueixi un Codi") },
-                        placeholder = { Text("Codi") },
+                        label = { Text(stringResource(id = R.string.code)) }, // Usando el recurso de idioma
+                        placeholder = { Text(stringResource(id = R.string.code)) },
                         leadingIcon = {
-                            Icon(Icons.Default.Lock, contentDescription = "Codi")
+                            Icon(Icons.Default.Lock, contentDescription = stringResource(id = R.string.code))
                         },
                         singleLine = true,
                         isError = showError && code.isEmpty(),
@@ -128,7 +128,6 @@ fun CodeScreen(viewModel: GoMathViewModel, navController: NavHostController) {
                             codeSuccess = true
                             viewModel.socket(code)
                             navController.navigate(GoMathApp.Control.name)
-
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -137,7 +136,7 @@ fun CodeScreen(viewModel: GoMathViewModel, navController: NavHostController) {
                         shape = RoundedCornerShape(8.dp)
                     ) {
                         Text(
-                            text = "Inicia Sessió",
+                            text = stringResource(id = R.string.login), // Usando el recurso de idioma
                             style = MaterialTheme.typography.labelLarge,
                             color = Color.White
                         )
@@ -150,7 +149,7 @@ fun CodeScreen(viewModel: GoMathViewModel, navController: NavHostController) {
                         exit = fadeOut(animationSpec = tween(500)) + slideOutVertically()
                     ) {
                         Text(
-                            text = "Si us plau, completa tots els camps",
+                            text = stringResource(id = R.string.control), // Mensaje de error traducido
                             color = MaterialTheme.colorScheme.error,
                             fontSize = 16.sp,
                             modifier = Modifier.padding(top = 16.dp)
@@ -169,7 +168,7 @@ fun CodeScreen(viewModel: GoMathViewModel, navController: NavHostController) {
                         shape = RoundedCornerShape(8.dp)
                     ) {
                         Text(
-                            text = "Cerrar sesión",
+                            text = stringResource(R.string.logout), // Usando el recurso de idioma
                             style = MaterialTheme.typography.labelLarge,
                             color = Color.White
                         )

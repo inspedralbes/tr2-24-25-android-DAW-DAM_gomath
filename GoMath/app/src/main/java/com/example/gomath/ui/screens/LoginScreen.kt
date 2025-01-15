@@ -17,11 +17,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.gomath.R
 import com.example.gomath.ui.GoMathApp
 import com.example.gomath.ui.GoMathViewModel
 
@@ -76,7 +78,7 @@ fun LoginScreen(viewModel: GoMathViewModel, navController: NavHostController) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Benvingut/da",
+                        text = stringResource(R.string.welcome),
                         style = MaterialTheme.typography.headlineLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -87,7 +89,7 @@ fun LoginScreen(viewModel: GoMathViewModel, navController: NavHostController) {
                     OutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
-                        label = { Text("Correu electrònic") },
+                        label = { Text(stringResource(R.string.email)) },
                         placeholder = { Text("exemple@correu.com") },
                         leadingIcon = {
                             Icon(Icons.Default.Email, contentDescription = "Email")
@@ -103,10 +105,10 @@ fun LoginScreen(viewModel: GoMathViewModel, navController: NavHostController) {
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
-                        label = { Text("Contrasenya") },
+                        label = { Text(stringResource(R.string.password)) },
                         placeholder = { Text("******") },
                         leadingIcon = {
-                            Icon(Icons.Default.Lock, contentDescription = "Contrasenya")
+                            Icon(Icons.Default.Lock, contentDescription = stringResource(R.string.password))
                         },
                         visualTransformation = if (passwordVisible)
                             VisualTransformation.None else PasswordVisualTransformation(),
@@ -114,7 +116,7 @@ fun LoginScreen(viewModel: GoMathViewModel, navController: NavHostController) {
                             IconButton(onClick = { passwordVisible = !passwordVisible }) {
                                 Icon(
                                     imageVector = Icons.Default.Lock,
-                                    contentDescription = "Mostra o amaga la contrasenya"
+                                    contentDescription = "Show or hide password"
                                 )
                             }
                         },
@@ -148,7 +150,7 @@ fun LoginScreen(viewModel: GoMathViewModel, navController: NavHostController) {
                         shape = RoundedCornerShape(8.dp)
                     ) {
                         Text(
-                            text = "Inicia Sessió",
+                            text = stringResource(id = R.string.login),
                             style = MaterialTheme.typography.labelLarge,
                             color = Color.White
                         )
@@ -161,7 +163,7 @@ fun LoginScreen(viewModel: GoMathViewModel, navController: NavHostController) {
                         exit = fadeOut(animationSpec = tween(500)) + slideOutVertically()
                     ) {
                         Text(
-                            text = "Si us plau, completa tots els camps",
+                            text = stringResource(R.string.error_fields),
                             color = MaterialTheme.colorScheme.error,
                             fontSize = 16.sp,
                             modifier = Modifier.padding(top = 16.dp)
@@ -189,5 +191,5 @@ fun LoginScreen(viewModel: GoMathViewModel, navController: NavHostController) {
 
 // Función para manejar el inicio de sesión
 fun handleLogin(context: Context) {
-    Toast.makeText(context, "Iniciant sessió...", Toast.LENGTH_SHORT).show()
+    Toast.makeText(context, context.getString(R.string.logging_in), Toast.LENGTH_SHORT).show()
 }

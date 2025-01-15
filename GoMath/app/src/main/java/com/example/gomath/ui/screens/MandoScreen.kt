@@ -23,15 +23,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.gomath.R
 import com.example.gomath.model.User
 import com.example.gomath.model.Users
 import com.example.gomath.ui.GoMathApp
 import com.example.gomath.ui.GoMathViewModel
-
-
 
 @Composable
 fun MandoScreen(viewModel: GoMathViewModel, navController: NavHostController) {
@@ -45,6 +45,13 @@ fun MandoScreen(viewModel: GoMathViewModel, navController: NavHostController) {
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Text(
+            text = stringResource(R.string.user_control),
+            fontSize = 32.sp,
+            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onPrimary,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
         Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
             // Botón para expulsar al usuario
             IconButton(
@@ -75,7 +82,7 @@ fun MandoScreen(viewModel: GoMathViewModel, navController: NavHostController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         ControlButton(
-            text = "Pausar",
+            text = stringResource(R.string.stop),
             icon = Icons.Filled.PauseCircle,
             isClicked = clickedButton == ButtonType.PAUSE
         ) {

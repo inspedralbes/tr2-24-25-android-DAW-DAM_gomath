@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GoMath</string>
+    <string name="login">Iniciar sesión</string>
+    <string name="code">Código</string>
+    <string name="control">Control</string>
+    <string name="result">Resultado</string>
+    <string name="logout">Cerrar sesión</string>
+    <string name="welcome">Bienvenido/a</string>
+    <string name="email">Correo electrónic</string>
+    <string name="password">Contraseña</string>
+    <string name="error_fields">Por favor completa todos los campos.</string>
+    <string name="logging_in">Iniciando sesión...</string>
+    <string name="stop">Pausa</string>
+    <string name="user_control">Control de Usuarios</string>
+</resources>

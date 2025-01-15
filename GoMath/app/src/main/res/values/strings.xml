@@ -4,4 +4,12 @@
     <string name="code">code</string>
     <string name="control">control</string>
     <string name="result">result</string>
+    <string name="logout">Logout</string>
+    <string name="welcome">Welcome</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="error_fields">Please complete all fields.</string>
+    <string name="logging_in">Logging in...</string>
+    <string name="stop">Stop</string>
+    <string name="user_control">User Control</string>
 </resources>

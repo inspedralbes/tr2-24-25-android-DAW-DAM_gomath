@@ -27,7 +27,6 @@ class GoMathViewModel() : ViewModel() {
 
     private val _currentUser = MutableStateFlow<UserSession?>(null)
 
-    // Llista de productes
     private val _users = MutableStateFlow(Users())
     val users: StateFlow<Users> = _users.asStateFlow()
 
@@ -35,12 +34,10 @@ class GoMathViewModel() : ViewModel() {
 
     private lateinit var mSocket: Socket
 
-    //Creació de socket
     init {
         viewModelScope.launch {
             try {
-                mSocket = IO.socket("http://gomath.daw.inspedralbes.cat:3000")
-                // mSocket = IO.socket("http://10.0.2.2:8000")
+                mSocket = IO.socket("http://gomath.daw.inspedralbes.cat:21555")
             } catch (e: Exception) {
                 e.printStackTrace()
                 Log.e("SocketIO", "Failed to connect to socket", e)

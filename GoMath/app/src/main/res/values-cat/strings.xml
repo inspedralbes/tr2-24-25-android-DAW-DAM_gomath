@@ -13,5 +13,5 @@
     <string name="logging_in">Iniciant sessió...</string>
     <string name="stop">Pausa</string>
     <string name="user_control">Control d\'usuaris</string>
-    <string name="login_rol">Accés denegat. Aquest compte no té permisos suficients.</string>
+    <string name="Login_rol">Accés denegat. Aquest compte no té permisos suficients.</string>
 </resources>

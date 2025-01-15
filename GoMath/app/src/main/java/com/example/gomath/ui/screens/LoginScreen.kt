@@ -136,7 +136,7 @@ fun LoginScreen(viewModel: GoMathViewModel, navController: NavHostController) {
                                     if (isAllowed) {
                                         navController.navigate(GoMathApp.Code.name)
                                     } else {
-                                        Toast.makeText(context, stringResource(R.string.login_rol)), Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(context, context.getString(R.string.Login_rol), Toast.LENGTH_SHORT).show()
                                     }
                                 }
                             } else {

@@ -2,13 +2,10 @@ package com.example.gomath.ui
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gomath.data.local.GoMathDB
-import com.example.gomath.data.loginFromApi
 import com.example.gomath.model.Game
-import com.example.gomath.model.LoginRequest
 import com.example.gomath.model.UserSession
 import com.example.gomath.model.User
 import com.example.gomath.model.Users
@@ -39,8 +36,8 @@ class GoMathViewModel() : ViewModel() {
     init {
         viewModelScope.launch {
             try {
-                // mSocket = IO.socket("http://gomath.daw.inspedralbes.cat:21555")
-                mSocket = IO.socket("http://10.0.2.2:3000")
+                mSocket = IO.socket("http://gomath.dam.inspedralbes.cat:29345")
+                // mSocket = IO.socket("http://10.0.2.2:3000")
             } catch (e: Exception) {
                 e.printStackTrace()
                 Log.e("SocketIO", "Failed to connect to socket", e)
